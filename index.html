@@ -144,7 +144,7 @@ footer {
   <div class="card hidden" id="login">
     <h2>Ingia HAMAD APP</h2>
 
-    <input id="loginPhone" type="tel" placeholder="Namba ya simu (+255...)">
+   <input id="loginEmail" type="email" placeholder="Barua pepe">
     <input id="loginPassword" type="password" placeholder="Nenosiri">
 
     <button onclick="loginUser()">Ingia</button>
@@ -211,24 +211,50 @@ footer {
 
 <footer>
   © 2026 HAMAD APP
-</footer>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 
-// KUONESHA LOGIN
+import {
+  getFirestore
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCP-GwWFpZaDUjUKxdr9Bp0qerEyRBI41k",
+  authDomain: "hamad-app.firebaseapp.com",
+  projectId: "hamad-app",
+  storageBucket: "hamad-app.firebasestorage.app",
+  messagingSenderId: "984717101495",
+  appId: "1:984717101495:web:11a268f55c1fc578fe4032"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+window.firebaseApp = app;
+window.firebaseDb = db;
+
 function showLogin() {
   document.getElementById("register").classList.add("hidden");
   document.getElementById("login").classList.remove("hidden");
 }
 
-// KUONESHA REGISTER
 function showRegister() {
   document.getElementById("login").classList.add("hidden");
   document.getElementById("register").classList.remove("hidden");
 }
 
-// USAJILI
-function registerUser() {
+async function registerUser() {
   const name = document.getElementById("fullname").value.trim();
   const username = document.getElementById("username").value.trim();
   const phone = document.getElementById("phone").value.trim();
@@ -245,53 +271,58 @@ function registerUser() {
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("hamadUsers") || "[]");
+  try {
+    const result = await createUserWithEmailAndPassword(
+      auth, email, password
+    );
 
-  if (users.some(user => user.phone === phone)) {
-    alert("Namba hii tayari imesajiliwa.");
-    return;
+    await updateProfile(result.user, {
+      displayName: name
+    });
+
+    alert("Usajili umekamilika!");
+
+  } catch (error) {
+    alert("Imeshindikana: " + error.message);
   }
-
-  users.push({
-    name: name,
-    username: username,
-    phone: phone,
-    email: email,
-    password: password
-  });
-
-  localStorage.setItem("hamadUsers", JSON.stringify(users));
-
-  alert("Usajili umekamilika!");
-  document.getElementById("loginPhone").value = phone;
-  showLogin();
 }
 
-// KUINGIA
-function loginUser() {
-  const phone = document.getElementById("loginPhone").value.trim();
+async function loginUser() {
+  const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
-  let users = JSON.parse(localStorage.getItem("hamadUsers") || "[]");
-
-  const user = users.find(function(item) {
-    return item.phone === phone && item.password === password;
-  });
-
-  if (!user) {
-    alert("Namba ya simu au nenosiri si sahihi.");
+  if (!email || !password) {
+    alert("Jaza barua pepe na nenosiri.");
     return;
   }
 
-  document.getElementById("login").classList.add("hidden");
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    alert("Imeshindikana kuingia: " + error.message);
+  }
+}
+
+function showDashboard(user) {
   document.getElementById("register").classList.add("hidden");
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("feature").classList.add("hidden");
   document.getElementById("welcome").classList.remove("hidden");
 
   document.getElementById("welcomeName").textContent =
-    "Karibu " + user.name;
+    "Karibu " + (user.displayName || user.email);
 }
 
-// KUFUNGUA HUDUMA
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    showDashboard(user);
+  } else {
+    document.getElementById("welcome").classList.add("hidden");
+    document.getElementById("feature").classList.add("hidden");
+    document.getElementById("login").classList.remove("hidden");
+  }
+});
+
 function openFeature(feature) {
   const titles = {
     messages: "💬 HAMAD CHAT",
@@ -313,36 +344,26 @@ function openFeature(feature) {
   document.getElementById("featureTitle").textContent = titles[feature];
   document.getElementById("featureDescription").textContent = descriptions[feature];
 
-  document.getElementById("chatBox").classList.add("hidden");
-  document.getElementById("mediaBox").classList.add("hidden");
-  document.getElementById("callsBox").classList.add("hidden");
-  document.getElementById("premiumBox").classList.add("hidden");
+  ["chatBox", "mediaBox", "callsBox", "premiumBox"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
 
-  if (feature === "messages") {
-    document.getElementById("chatBox").classList.remove("hidden");
-  }
+  const boxes = {
+    messages: "chatBox",
+    media: "mediaBox",
+    calls: "callsBox",
+    premium: "premiumBox"
+  };
 
-  if (feature === "media") {
-    document.getElementById("mediaBox").classList.remove("hidden");
-  }
-
-  if (feature === "calls") {
-    document.getElementById("callsBox").classList.remove("hidden");
-  }
-
-  if (feature === "premium") {
-    document.getElementById("premiumBox").classList.remove("hidden");
-  }
+  document.getElementById(boxes[feature]).classList.remove("hidden");
 }
 
-// KUTUMA UJUMBE WA MAJARIBIO
 function sendMessage() {
   const input = document.getElementById("messageInput");
   const messages = document.getElementById("chatMessages");
-
   const message = input.value.trim();
 
-  if (message === "") {
+  if (!message) {
     alert("Andika ujumbe kwanza.");
     return;
   }
@@ -352,48 +373,34 @@ function sendMessage() {
   bubble.textContent = message;
 
   messages.appendChild(bubble);
-
   input.value = "";
   messages.scrollTop = messages.scrollHeight;
 }
 
-// KURUDI NYUMBANI
 function backHome() {
   document.getElementById("feature").classList.add("hidden");
   document.getElementById("welcome").classList.remove("hidden");
 }
 
-// KUTOKA
-function logout() {
-  document.getElementById("welcome").classList.add("hidden");
-  document.getElementById("feature").classList.add("hidden");
-  document.getElementById("login").classList.remove("hidden");
-
-  document.getElementById("loginPassword").value = "";
+async function logout() {
+  try {
+    await signOut(auth);
+    document.getElementById("loginPassword").value = "";
+  } catch (error) {
+    alert("Imeshindikana kutoka: " + error.message);
+  }
 }
 
-</script>
+window.showLogin = showLogin;
+window.showRegister = showRegister;
+window.registerUser = registerUser;
+window.loginUser = loginUser;
+window.openFeature = openFeature;
+window.sendMessage = sendMessage;
+window.backHome = backHome;
+window.logout = logout;
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCP-GwWFpZaDUjUKxdr9Bp0qerEyRBI41k",
-    authDomain: "hamad-app.firebaseapp.com",
-    projectId: "hamad-app",
-    storageBucket: "hamad-app.firebasestorage.app",
-    messagingSenderId: "984717101495",
-    appId: "1:984717101495:web:11a268f55c1fc578fe4032"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  window.firebaseApp = app;
-  window.firebaseDb = db;
-
-  console.log("HAMAD APP imeunganishwa na Firebase!");
+console.log("HAMAD APP imeunganishwa na Firebase Authentication!");
 </script>
 
 </body>
