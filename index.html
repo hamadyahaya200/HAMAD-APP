@@ -143,92 +143,44 @@ button{
 </div>
 
 <script>
-function showLogin(){
- document.getElementById("register").classList.add("hidden");
- document.getElementById("login").classList.remove("hidden");
-}
-function showRegister(){
- document.getElementById("login").classList.add("hidden");
- document.getElementById("register").classList.remove("hidden");
-}
-function registerUser(){
- const name = document.getElementById("fullname").value.trim();
- const username = document.getElementById("username").value.trim();
- const phone = document.getElementById("phone").value.trim();
- const email = document.getElementById("email").value.trim();
- const password = document.getElementById("password").value;
 
- if(!name || !username || !phone || !email || !password){
-  alert("Jaza sehemu zote.");
-  return;
- }
+function openFeature(feature) {
+  const titles = {
+    messages: "💬 HAMAD CHAT",
+    media: "📷 Picha na Video",
+    calls: "📞 Simu za Sauti",
+    premium: "⭐ HAMAD Premium"
+  };
 
- if(password.length < 8){
-  alert("Nenosiri liwe na angalau herufi 8.");
-  return;
- }
+  const descriptions = {
+    messages: "Karibu kwenye HAMAD CHAT.",
+    media: "Hapa tutatuma picha na video.",
+    calls: "Hapa tutapanga mfumo wa simu.",
+    premium: "Huduma za Premium zitapatikana hapa."
+  };
 
- const users = JSON.parse(localStorage.getItem("hamadUsers") || "[]");
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("feature").classList.remove("hidden");
 
- if(users.some(user => user.phone === phone)){
-  alert("Namba hii tayari imesajiliwa.");
-  return;
- }
+  document.getElementById("featureTitle").textContent = titles[feature];
+  document.getElementById("featureDescription").textContent = descriptions[feature];
 
- users.push({name, username, phone, email, password});
- localStorage.setItem("hamadUsers", JSON.stringify(users));
+  document.getElementById("chatBox").classList.add("hidden");
 
- alert("Usajili wa majaribio umekamilika!");
- showLogin();
-}
-
-function loginUser(){
- const phone = document.getElementById("loginEmail").value.trim();
- const password = document.getElementById("loginPassword").value;
-
- const users = JSON.parse(localStorage.getItem("hamadUsers") || "[]");
-
- const user = users.find(
-  u => u.phone === phone && u.password === password
- );
-
- if(!user){
-  alert("Namba ya simu au nenosiri si sahihi.");
-  return;
- }
-
- document.getElementById("login").classList.add("hidden");
- document.getElementById("welcome").classList.remove("hidden");
- document.getElementById("welcomeName").textContent = "Karibu " + user.name;
-}
-
-
-function sendMessage() {
-  const input = document.getElementById("messageInput");
-  const messages = document.getElementById("chatMessages");
-
-  const message = input.value.trim();
-
-  if (message === "") {
-    alert("Andika ujumbe kwanza.");
-    return;
+  if (feature === "messages") {
+    document.getElementById("chatBox").classList.remove("hidden");
   }
-
-  const bubble = document.createElement("div");
-  bubble.textContent = message;
-
-  bubble.style.background = "#087f5b";
-  bubble.style.color = "white";
-  bubble.style.padding = "12px";
-  bubble.style.margin = "10px 0";
-  bubble.style.borderRadius = "12px";
-  bubble.style.textAlign = "right";
-
-  messages.appendChild(bubble);
-  input.value = "";
-  messages.scrollTop = messages.scrollHeight;
 }
 
+function backHome() {
+  document.getElementById("feature").classList.add("hidden");
+  document.getElementById("welcome").classList.remove("hidden");
+}
+
+function logout() {
+  document.getElementById("welcome").classList.add("hidden");
+  showLogin();
+}
 
 </script>
 
