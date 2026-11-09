@@ -147,9 +147,34 @@ function registerUser(){
 function loginUser(){
  alert("Mfumo halisi wa kuingia bado haujaunganishwa.");
 }
-function logout(){
- document.getElementById("welcome").classList.add("hidden");
- showLogin();
+
+function openFeature(feature) {
+  const titles = {
+    messages: "💬 Ujumbe",
+    media: "📷 Picha na Video",
+    calls: "📞 Simu za Sauti",
+    premium: "⭐ HAMAD Premium"
+  };
+
+  const descriptions = {
+    messages: "Hapa ndipo tutakapojenga mfumo wa kutuma na kupokea ujumbe.",
+    media: "Hapa ndipo tutakapoweka mfumo wa kutuma picha na video.",
+    calls: "Hapa ndipo tutakapojenga mfumo wa kupiga simu kupitia intaneti.",
+    premium: "Hapa ndipo tutakapoweka mipango ya malipo ya mwaka na huduma za Premium."
+  };
+
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("feature").classList.remove("hidden");
+
+  document.getElementById("featureTitle").textContent = titles[feature];
+  document.getElementById("featureDescription").textContent = descriptions[feature];
+}
+
+function backHome() {
+  document.getElementById("feature").classList.add("hidden");
+  document.getElementById("welcome").classList.remove("hidden");
+}
+
 }
 </script>
 
