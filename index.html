@@ -203,6 +203,32 @@ function loginUser(){
 }
 
 
+function sendMessage() {
+  const input = document.getElementById("messageInput");
+  const messages = document.getElementById("chatMessages");
+
+  const message = input.value.trim();
+
+  if (message === "") {
+    alert("Andika ujumbe kwanza.");
+    return;
+  }
+
+  const bubble = document.createElement("div");
+  bubble.textContent = message;
+
+  bubble.style.background = "#087f5b";
+  bubble.style.color = "white";
+  bubble.style.padding = "12px";
+  bubble.style.margin = "10px 0";
+  bubble.style.borderRadius = "12px";
+  bubble.style.textAlign = "right";
+
+  messages.appendChild(bubble);
+  input.value = "";
+  messages.scrollTop = messages.scrollHeight;
+}
+
 
 </script>
 
