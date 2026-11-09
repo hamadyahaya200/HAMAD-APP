@@ -118,9 +118,25 @@ button{
   <button onclick="logout()">Toka</button>
 </div>
 
+
 <div class="card hidden" id="feature">
   <h2 id="featureTitle"></h2>
   <p id="featureDescription"></p>
+
+  <div id="chatBox" class="hidden">
+    <div id="chatMessages">
+      <p>Karibu HAMAD CHAT!</p>
+    </div>
+
+    <input
+      id="messageInput"
+      type="text"
+      placeholder="Andika ujumbe wako..."
+    >
+
+    <button onclick="sendMessage()">Tuma</button>
+  </div>
+
   <button onclick="backHome()">Rudi Nyumbani</button>
 </div>
 
