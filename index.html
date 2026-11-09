@@ -2,66 +2,130 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HAMAD APP</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101827;
-      color: white;
-      text-align: center;
-    }
-    header {
-      padding: 25px;
-      background: #087f5b;
-    }
-    h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-    .container {
-      padding: 35px 20px;
-    }
-    .logo {
-      font-size: 55px;
-      margin: 20px;
-    }
-    .card {
-      background: #1e293b;
-      padding: 25px;
-      border-radius: 15px;
-      max-width: 400px;
-      margin: auto;
-    }
-    button {
-      background: #087f5b;
-      color: white;
-      border: 0;
-      padding: 14px 25px;
-      border-radius: 9px;
-      font-size: 16px;
-      margin-top: 15px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAMAD APP</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#101827;
+ color:white;
+}
+header{
+ background:#087f5b;
+ padding:22px;
+ text-align:center;
+}
+header h1{margin:0}
+.container{
+ max-width:420px;
+ margin:35px auto;
+ padding:20px;
+}
+.card{
+ background:#1e293b;
+ padding:25px;
+ border-radius:15px;
+}
+input{
+ width:100%;
+ padding:13px;
+ margin:9px 0;
+ border:0;
+ border-radius:8px;
+ font-size:15px;
+}
+button{
+ width:100%;
+ padding:14px;
+ margin-top:12px;
+ border:0;
+ border-radius:8px;
+ background:#087f5b;
+ color:white;
+ font-size:16px;
+ cursor:pointer;
+}
+.switch{
+ text-align:center;
+ color:#38bdf8;
+ cursor:pointer;
+ margin-top:18px;
+}
+.hidden{display:none}
+</style>
 </head>
 <body>
-  <header>
-    <h1>HAMAD APP</h1>
-    <p>Wasiliana bila mipaka</p>
-  </header>
 
-  <div class="container">
-    <div class="logo">🌍</div>
-    <div class="card">
-      <h2>Karibu HAMAD APP</h2>
-      <p>Ujumbe, picha, video na mawasiliano.</p>
-      <button onclick="alert('Karibu HAMAD APP!')">
-        Anza
-      </button>
-    </div>
-  </div>
+<header>
+<h1>HAMAD APP 🌍</h1>
+<p>Wasiliana bila mipaka</p>
+</header>
+
+<div class="container">
+
+<div class="card" id="register">
+<h2>Fungua Akaunti</h2>
+<input id="fullname" placeholder="Jina kamili">
+<input id="username" placeholder="Username">
+<input id="email" type="email" placeholder="Barua pepe">
+<input id="password" type="password" placeholder="Nenosiri">
+<button onclick="registerUser()">Jisajili</button>
+<p class="switch" onclick="showLogin()">Tayari una akaunti? Ingia</p>
+</div>
+
+<div class="card hidden" id="login">
+<h2>Ingia HAMAD APP</h2>
+<input id="loginEmail" placeholder="Barua pepe au Username">
+<input id="loginPassword" type="password" placeholder="Nenosiri">
+<button onclick="loginUser()">Ingia</button>
+<p class="switch" onclick="showRegister()">Huna akaunti? Jisajili</p>
+</div>
+
+<div class="card hidden" id="welcome">
+<h2>Karibu HAMAD APP!</h2>
+<p id="welcomeName"></p>
+<button onclick="logout()">Toka</button>
+</div>
+
+</div>
+
+<script>
+function showLogin(){
+ document.getElementById("register").classList.add("hidden");
+ document.getElementById("login").classList.remove("hidden");
+}
+function showRegister(){
+ document.getElementById("login").classList.add("hidden");
+ document.getElementById("register").classList.remove("hidden");
+}
+function registerUser(){
+ const name=document.getElementById("fullname").value.trim();
+ const username=document.getElementById("username").value.trim();
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+
+ if(!name||!username||!email||!password){
+  alert("Jaza sehemu zote.");
+  return;
+ }
+ if(password.length<8){
+  alert("Nenosiri liwe na angalau herufi 8.");
+  return;
+ }
+ alert("Muonekano wa usajili umekamilika. Mfumo halisi wa kuhifadhi akaunti bado haujaunganishwa.");
+ showLogin();
+}
+function loginUser(){
+ alert("Mfumo halisi wa kuingia bado haujaunganishwa.");
+}
+function logout(){
+ document.getElementById("welcome").classList.add("hidden");
+ showLogin();
+}
+</script>
+
 </body>
 </html>
