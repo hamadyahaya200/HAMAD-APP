@@ -84,10 +84,36 @@ button{
 <p class="switch" onclick="showRegister()">Huna akaunti? Jisajili</p>
 </div>
 
+
 <div class="card hidden" id="welcome">
-<h2>Karibu HAMAD APP!</h2>
-<p id="welcomeName"></p>
-<button onclick="logout()">Toka</button>
+  <h2>Karibu HAMAD APP 🌍</h2>
+  <p id="welcomeName"></p>
+
+  <div class="dashboard">
+    <button onclick="openFeature('messages')">
+      💬 Ujumbe
+    </button>
+
+    <button onclick="openFeature('media')">
+      📷 Picha na Video
+    </button>
+
+    <button onclick="openFeature('calls')">
+      📞 Simu za Sauti
+    </button>
+
+    <button onclick="openFeature('premium')">
+      ⭐ HAMAD Premium
+    </button>
+  </div>
+
+  <button onclick="logout()">Toka</button>
+</div>
+
+<div class="card hidden" id="feature">
+  <h2 id="featureTitle"></h2>
+  <p id="featureDescription"></p>
+  <button onclick="backHome()">Rudi Nyumbani</button>
 </div>
 
 </div>
