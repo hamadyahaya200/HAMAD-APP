@@ -374,5 +374,27 @@ function logout() {
 
 </script>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCP-GwWFpZaDUjUKxdr9Bp0qerEyRBI41k",
+    authDomain: "hamad-app.firebaseapp.com",
+    projectId: "hamad-app",
+    storageBucket: "hamad-app.firebasestorage.app",
+    messagingSenderId: "984717101495",
+    appId: "1:984717101495:web:11a268f55c1fc578fe4032"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.firebaseApp = app;
+  window.firebaseDb = db;
+
+  console.log("HAMAD APP imeunganishwa na Firebase!");
+</script>
+
 </body>
 </html>
