@@ -212,8 +212,11 @@ footer {
 <footer>
   © 2026 HAMAD APP
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 import {
   getFirestore
@@ -280,10 +283,20 @@ async function registerUser() {
       displayName: name
     });
 
+    await setDoc(doc(db, "users", result.user.uid), {
+      name: name,
+      username: username,
+      phone: phone,
+      email: email,
+      createdAt: new Date()
+    });
+
     alert("Usajili umekamilika!");
 
   } catch (error) {
     alert("Imeshindikana: " + error.message);
+  }
+}
   }
 }
 
