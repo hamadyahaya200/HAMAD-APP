@@ -70,6 +70,7 @@ button{
 <h2>Fungua Akaunti</h2>
 <input id="fullname" placeholder="Jina kamili">
 <input id="username" placeholder="Username">
+ <input id="phone" type="tel" placeholder="Namba ya simu (+255...)">
 <input id="email" type="email" placeholder="Barua pepe">
 <input id="password" type="password" placeholder="Nenosiri">
 <button onclick="registerUser()">Jisajili</button>
@@ -78,7 +79,6 @@ button{
 
 <div class="card hidden" id="login">
 <h2>Ingia HAMAD APP</h2>
-<input id="loginEmail" placeholder="Barua pepe au Username">
 <input id="loginPassword" type="password" placeholder="Nenosiri">
 <button onclick="loginUser()">Ingia</button>
 <p class="switch" onclick="showRegister()">Huna akaunti? Jisajili</p>
@@ -128,54 +128,58 @@ function showRegister(){
  document.getElementById("register").classList.remove("hidden");
 }
 function registerUser(){
- const name=document.getElementById("fullname").value.trim();
- const username=document.getElementById("username").value.trim();
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
+ const name = document.getElementById("fullname").value.trim();
+ const username = document.getElementById("username").value.trim();
+ const phone = document.getElementById("phone").value.trim();
+ const email = document.getElementById("email").value.trim();
+ const password = document.getElementById("password").value;
 
- if(!name||!username||!email||!password){
+ if(!name || !username || !phone || !email || !password){
   alert("Jaza sehemu zote.");
   return;
  }
- if(password.length<8){
+
+ if(password.length < 8){
   alert("Nenosiri liwe na angalau herufi 8.");
   return;
  }
- alert("Muonekano wa usajili umekamilika. Mfumo halisi wa kuhifadhi akaunti bado haujaunganishwa.");
+
+ const users = JSON.parse(localStorage.getItem("hamadUsers") || "[]");
+
+ if(users.some(user => user.phone === phone)){
+  alert("Namba hii tayari imesajiliwa.");
+  return;
+ }
+
+ users.push({name, username, phone, email, password});
+ localStorage.setItem("hamadUsers", JSON.stringify(users));
+
+ alert("Usajili wa majaribio umekamilika!");
  showLogin();
 }
+
 function loginUser(){
- alert("Mfumo halisi wa kuingia bado haujaunganishwa.");
+ const phone = document.getElementById("loginEmail").value.trim();
+ const password = document.getElementById("loginPassword").value;
+
+ const users = JSON.parse(localStorage.getItem("hamadUsers") || "[]");
+
+ const user = users.find(
+  u => u.phone === phone && u.password === password
+ );
+
+ if(!user){
+  alert("Namba ya simu au nenosiri si sahihi.");
+  return;
+ }
+
+ document.getElementById("login").classList.add("hidden");
+ document.getElementById("welcome").classList.remove("hidden");
+ document.getElementById("welcomeName").textContent = "Karibu " + user.name;
 }
 
-function openFeature(feature) {
-  const titles = {
-    messages: "💬 Ujumbe",
-    media: "📷 Picha na Video",
-    calls: "📞 Simu za Sauti",
-    premium: "⭐ HAMAD Premium"
-  };
 
-  const descriptions = {
-    messages: "Hapa ndipo tutakapojenga mfumo wa kutuma na kupokea ujumbe.",
-    media: "Hapa ndipo tutakapoweka mfumo wa kutuma picha na video.",
-    calls: "Hapa ndipo tutakapojenga mfumo wa kupiga simu kupitia intaneti.",
-    premium: "Hapa ndipo tutakapoweka mipango ya malipo ya mwaka na huduma za Premium."
-  };
 
-  document.getElementById("welcome").classList.add("hidden");
-  document.getElementById("feature").classList.remove("hidden");
-
-  document.getElementById("featureTitle").textContent = titles[feature];
-  document.getElementById("featureDescription").textContent = descriptions[feature];
-}
-
-function backHome() {
-  document.getElementById("feature").classList.add("hidden");
-  document.getElementById("welcome").classList.remove("hidden");
-}
-
-}
 </script>
 
 </body>
